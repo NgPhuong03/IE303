@@ -6,17 +6,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -26,50 +19,81 @@ public class Main extends Application {
     // Constants for styling
     private static final class Styles {
         // Colors
-        static final String GRID_CELL_BACKGROUND = "#E0E0E0";  // Màu xám cho cell
-        static final String GRID_CELL_HOVER = "#D0D0D0";       // Màu xám đậm hơn khi hover
-        static final String GRID_CELL_BORDER = "#C0C0C0";      // Màu viền cell
-        static final String PREVIEW_BACKGROUND = "#F0F0F0";    // Màu nền khung xem trước
-        static final String PREVIEW_BORDER = "#E0E0E0";        // Màu viền khung xem trước
-        static final String SELECTED_BORDER = "#4CAF50";       // Màu viền khi được chọn
-        static final String PLACEHOLDER_BACKGROUND = "#D0D0D0"; // Màu nền placeholder
-        static final String PLACEHOLDER_BORDER = "#C0C0C0";    // Màu viền placeholder
-        static final String PLACEHOLDER_HOVER = "#C8C8C8";     // Màu hover placeholder
-        static final String TEXT_COLOR = "#333333";            // Màu chữ mặc định
-        static final String PRICE_COLOR = "#E53935";           // Màu chữ giá tiền
-        
+        static final class Colors {
+            static final String GRID_CELL_BACKGROUND = "#E0E0E0";
+            static final String GRID_CELL_HOVER = "#D0D0D0";
+            static final String GRID_CELL_BORDER = "#C0C0C0";
+            static final String PREVIEW_BACKGROUND = "#F0F0F0";
+            static final String PREVIEW_BORDER = "#E0E0E0";
+            static final String SELECTED_BORDER = "#1480F2";
+            static final String PLACEHOLDER_BACKGROUND = "#D0D0D0";
+            static final String PLACEHOLDER_BORDER = "#C0C0C0";
+            static final String PLACEHOLDER_HOVER = "#C8C8C8";
+            static final String TEXT_COLOR = "#333333";
+            static final String DESC_COLOR = "#666666";
+            static final String PRICE_COLOR = "#000000";
+        }
+
         // Dimensions
-        static final int CELL_SIZE = 150;          // Kích thước cell
-        static final int IMAGE_SIZE = 140;         // Kích thước ảnh
-        static final int CELL_PADDING = 5;         // Padding của cell
-        static final int BORDER_WIDTH = 1;
-        static final int BORDER_RADIUS = 5;
-        static final int GRID_PADDING = 20;
-        static final int GRID_GAP = 20;
-        static final int PREVIEW_SIZE = 400;
-        static final int PREVIEW_PADDING = 20;
-        static final int CELL_CONTENT_PADDING = 8; // Padding cho nội dung trong cell
-        
+        static final class Dimensions {
+            static final int CELL_SIZE = 180;
+            static final int IMAGE_SIZE = 140;
+            static final int CELL_PADDING = 5;
+            static final int BORDER_WIDTH = 1;
+            static final int BORDER_RADIUS = 5;
+            static final int GRID_PADDING = 20;
+            static final int GRID_GAP = 20;
+            static final int PREVIEW_WIDTH = 300;
+            static final int PREVIEW_IMAGE_SIZE = 250;
+            static final int PREVIEW_PADDING = 20;
+            static final int PREVIEW_INFO_PADDING = 15;
+            static final int CELL_CONTENT_PADDING = 8;
+        }
+
         // Font sizes
-        static final int TITLE_FONT_SIZE = 14;
-        static final int DESC_FONT_SIZE = 12;
-        static final int BRAND_FONT_SIZE = 11;
-        static final int PRICE_FONT_SIZE = 13;
-        
+        static final class FontSizes {
+            static final int TITLE = 16;
+            static final int DESC = 12;
+            static final int BRAND = 11;
+            static final int PRICE = 13;
+        }
+
         // Effects
-        static final double SHADOW_RADIUS = 3.0;
-        static final double SHADOW_OFFSET = 2.0;
-        static final double SHADOW_OPACITY = 0.2;
-        static final double HOVER_SCALE = 1.05;
-        
-        // Preview styles
-        static final int PREVIEW_WIDTH = 300;          // Chiều rộng khung preview
-        static final int PREVIEW_IMAGE_SIZE = 250;     // Kích thước ảnh preview
-        static final int PREVIEW_INFO_PADDING = 15;    // Padding cho phần thông tin
-        static final int PREVIEW_TITLE_FONT_SIZE = 18; // Font size cho tiêu đề preview
-        static final int PREVIEW_DESC_FONT_SIZE = 14;  // Font size cho mô tả preview
-        static final int PREVIEW_BRAND_FONT_SIZE = 14; // Font size cho hãng preview
-        static final int PREVIEW_PRICE_FONT_SIZE = 16; // Font size cho giá preview
+        static final class Effects {
+            static final double SHADOW_RADIUS = 3.0;
+            static final double SHADOW_OFFSET = 2.0;
+            static final double SHADOW_OPACITY = 0.2;
+            static final double HOVER_SCALE = 1.05;
+        }
+    }
+
+    // Product data model
+    private static final class Product {
+        final String name;
+        final String description;
+        final String brand;
+        final String price;
+
+        Product(String[] data) {
+            this.name = data[0];
+            this.description = data[1];
+            this.brand = data[2];
+            this.price = data[3];
+        }
+    }
+
+    // Product data
+    private static final class ProductData {
+        static final Product[] PRODUCTS = {
+            new Product(new String[]{"ADIDAS ULTRABOOST 23", "Màn hình 6.1 inch, Chip A17 Pro", "Adidas", "$120"}),
+            new Product(new String[]{"ADIDAS SUPERSTAR ORIGINALS", "Giày chạy bộ hiệu suất cao với công nghệ Boost mang lại cảm giác êm ái và đàn hồi tối đa.", "Adidas", "$140"}),
+            new Product(new String[]{"ADIDAS PREDATOR EDGE.1 FG", "Thiết kế cổ điển với mũi giày vỏ sò huyền thoại, phù hợp cho cả thời trang đường phố và hàng ngày.", "Adidas", "$100"}),
+            new Product(new String[]{"ADIDAS FORUM LOW", "Giày đá bóng dành cho sân cỏ tự nhiên, hỗ trợ kiểm soát bóng vượt trội nhờ thiết kế mặt vân nổi.", "Adidas", "$120"}),
+            new Product(new String[]{"ADIDAS TERREX SWIFT R3 GTX", "Sneaker phong cách retro từ thập niên 80, kết hợp hoàn hảo giữa chất liệu da và kiểu dáng hiện đại.", "Adidas", "$170"}),
+            new Product(new String[]{"ADIDAS NMD_R1 V2", "Giày leo núi chống nước với đế Continental giúp bám chắc trên nhiều địa hình khác nhau.", "Adidas", "$140"}),
+            new Product(new String[]{"NIEK", "Thiết kế thời trang với phần đế Boost và kiểu dáng năng động, phù hợp để mang hàng ngày.", "NIKE", "$220"}),
+            new Product(new String[]{"LOC GIO BANG THAN", "Giày 6 màu", "Rainbow", "$0"})
+        };
     }
 
     // Grid configuration
@@ -77,20 +101,7 @@ public class Main extends Application {
     private static final int GRID_COLS = 4;
     private static final String IMAGE_PATH_TEMPLATE = "/images/img%d.png";
 
-    // Sample product data
-    private static final class ProductData {
-        static final String[][] PRODUCTS = {
-            {"iPhone 15 Pro", "Màn hình 6.1 inch, Chip A17 Pro", "Apple", "29.990.000đ"},
-            {"Samsung S24", "Màn hình 6.2 inch, Snapdragon 8 Gen 3", "Samsung", "24.990.000đ"},
-            {"Xiaomi 14", "Màn hình 6.36 inch, Snapdragon 8 Gen 3", "Xiaomi", "19.990.000đ"},
-            {"Google Pixel 8", "Màn hình 6.2 inch, Tensor G3", "Google", "18.990.000đ"},
-            {"OnePlus 12", "Màn hình 6.82 inch, Snapdragon 8 Gen 3", "OnePlus", "17.990.000đ"},
-            {"Nothing Phone 2", "Màn hình 6.7 inch, Snapdragon 8+ Gen 1", "Nothing", "14.990.000đ"},
-            {"ASUS ROG Phone 8", "Màn hình 6.78 inch, Snapdragon 8 Gen 3", "ASUS", "22.990.000đ"},
-            {"Sony Xperia 1 VI", "Màn hình 6.5 inch, Snapdragon 8 Gen 3", "Sony", "25.990.000đ"}
-        };
-    }
-
+    // UI Components
     private ImageView previewImageView;
     private VBox previewInfoBox;
     private StackPane selectedCell;
@@ -102,169 +113,213 @@ public class Main extends Application {
         VBox previewBox = createPreviewBox();
         
         root.getChildren().addAll(previewBox, grid);
-        addImagesToGrid(grid);
+        addProductsToGrid(grid);
         showStage(stage, root);
     }
 
     private HBox createRootLayout() {
-        HBox root = new HBox(Styles.GRID_PADDING);
-        root.setPadding(new Insets(Styles.GRID_PADDING));
+        HBox root = new HBox(Styles.Dimensions.GRID_PADDING);
+        root.setPadding(new Insets(Styles.Dimensions.GRID_PADDING));
         root.setAlignment(Pos.CENTER);
         return root;
     }
 
     private VBox createPreviewBox() {
-        VBox previewBox = new VBox(Styles.PREVIEW_PADDING);
-        previewBox.setPrefWidth(Styles.PREVIEW_WIDTH);
+        VBox previewBox = new VBox(Styles.Dimensions.PREVIEW_PADDING);
+        previewBox.setPrefWidth(Styles.Dimensions.PREVIEW_WIDTH);
         previewBox.setAlignment(Pos.TOP_CENTER);
         
-        // Tạo ImageView cho ảnh preview
-        previewImageView = new ImageView();
-        previewImageView.setFitWidth(Styles.PREVIEW_IMAGE_SIZE);
-        previewImageView.setFitHeight(Styles.PREVIEW_IMAGE_SIZE);
-        previewImageView.setPreserveRatio(true);
+        previewImageView = createPreviewImageView();
+        previewInfoBox = createPreviewInfoBox();
         
-        // Tạo VBox cho thông tin sản phẩm
-        previewInfoBox = new VBox(Styles.PREVIEW_INFO_PADDING);
-        previewInfoBox.setAlignment(Pos.TOP_LEFT);
-        previewInfoBox.setMaxWidth(Styles.PREVIEW_WIDTH - 2 * Styles.PREVIEW_PADDING);
-        
-        // Áp dụng style cho preview box
-        String previewStyle = String.format(
-            "-fx-background-color: %s;" +
-            "-fx-padding: %dpx;" +
-            "-fx-border-color: %s;" +
-            "-fx-border-width: %dpx;" +
-            "-fx-border-radius: %dpx;" +
-            "-fx-background-radius: %dpx;",
-            Styles.PREVIEW_BACKGROUND,
-            Styles.PREVIEW_PADDING,
-            Styles.PREVIEW_BORDER,
-            Styles.BORDER_WIDTH,
-            Styles.BORDER_RADIUS,
-            Styles.BORDER_RADIUS
-        );
-        previewBox.setStyle(previewStyle);
-        previewBox.setEffect(createShadow());
-        
-        // Thêm các thành phần vào preview box
+        applyPreviewBoxStyle(previewBox);
         previewBox.getChildren().addAll(previewImageView, previewInfoBox);
         
         return previewBox;
     }
 
-    private GridPane createGrid() {
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(Styles.GRID_PADDING));
-        grid.setHgap(Styles.GRID_GAP);
-        grid.setVgap(Styles.GRID_GAP);
-        return grid;
-    }
-
-    private void addImagesToGrid(GridPane grid) {
-        DropShadow shadow = createShadow();
-        
-        for (int row = 0; row < GRID_ROWS; row++) {
-            for (int col = 0; col < GRID_COLS; col++) {
-                StackPane cell = createCell(row, col, shadow);
-                grid.add(cell, col, row);
-            }
-        }
-    }
-
-    private DropShadow createShadow() {
-        DropShadow shadow = new DropShadow();
-        shadow.setRadius(Styles.SHADOW_RADIUS);
-        shadow.setOffsetX(Styles.SHADOW_OFFSET);
-        shadow.setOffsetY(Styles.SHADOW_OFFSET);
-        shadow.setColor(Color.rgb(0, 0, 0, Styles.SHADOW_OPACITY));
-        return shadow;
-    }
-
-    private StackPane createCell(int row, int col, DropShadow shadow) {
-        // Tạo container cho cell
-        StackPane cell = new StackPane();
-        cell.setPrefSize(Styles.CELL_SIZE, Styles.CELL_SIZE);
-        cell.setMaxSize(Styles.CELL_SIZE, Styles.CELL_SIZE);
-        
-        // Tạo VBox để chứa tất cả nội dung
-        VBox contentBox = new VBox(Styles.CELL_CONTENT_PADDING);
-        contentBox.setAlignment(Pos.TOP_CENTER);
-        contentBox.setMaxWidth(Styles.CELL_SIZE - 2 * Styles.CELL_PADDING);
-        
-        // Tạo các label cho thông tin sản phẩm
-        Label titleLabel = createLabel(ProductData.PRODUCTS[row * GRID_COLS + col][0], 
-            Font.font("System", FontWeight.BOLD, Styles.TITLE_FONT_SIZE));
-        titleLabel.setWrapText(true);
-        titleLabel.setTextAlignment(TextAlignment.CENTER);
-        
-        Label descLabel = createLabel(ProductData.PRODUCTS[row * GRID_COLS + col][1], 
-            Font.font("System", Styles.DESC_FONT_SIZE));
-        descLabel.setWrapText(true);
-        descLabel.setTextAlignment(TextAlignment.CENTER);
-        
-        // Tạo HBox cho brand và price
-        HBox bottomBox = new HBox();
-        bottomBox.setAlignment(Pos.BOTTOM_LEFT);
-        bottomBox.setSpacing(Styles.CELL_CONTENT_PADDING);
-        
-        Label brandLabel = createLabel(ProductData.PRODUCTS[row * GRID_COLS + col][2], 
-            Font.font("System", Styles.BRAND_FONT_SIZE));
-        
-        Label priceLabel = createLabel(ProductData.PRODUCTS[row * GRID_COLS + col][3], 
-            Font.font("System", FontWeight.BOLD, Styles.PRICE_FONT_SIZE));
-        priceLabel.setTextFill(Color.web(Styles.PRICE_COLOR));
-        
-        // Thêm brand và price vào bottomBox
-        bottomBox.getChildren().addAll(brandLabel, priceLabel);
-        
-        // Tạo ImageView cho ảnh
+    private ImageView createPreviewImageView() {
         ImageView imageView = new ImageView();
-        imageView.setFitWidth(Styles.IMAGE_SIZE);
-        imageView.setFitHeight(Styles.IMAGE_SIZE);
+        imageView.setFitWidth(Styles.Dimensions.PREVIEW_IMAGE_SIZE);
+        imageView.setFitHeight(Styles.Dimensions.PREVIEW_IMAGE_SIZE);
         imageView.setPreserveRatio(true);
-        
-        // Thêm tất cả các thành phần vào contentBox
-        contentBox.getChildren().addAll(titleLabel, imageView, descLabel, bottomBox);
-        
-        // Thêm contentBox vào cell
-        cell.getChildren().add(contentBox);
-        
-        // Áp dụng style cho cell
-        String baseStyle = String.format(
+        return imageView;
+    }
+
+    private VBox createPreviewInfoBox() {
+        VBox infoBox = new VBox(Styles.Dimensions.PREVIEW_INFO_PADDING);
+        infoBox.setAlignment(Pos.TOP_LEFT);
+        infoBox.setMaxWidth(Styles.Dimensions.PREVIEW_WIDTH - 2 * Styles.Dimensions.PREVIEW_PADDING);
+        return infoBox;
+    }
+
+    private void applyPreviewBoxStyle(VBox previewBox) {
+        String style = String.format(
             "-fx-background-color: %s;" +
             "-fx-padding: %dpx;" +
             "-fx-border-color: %s;" +
             "-fx-border-width: %dpx;" +
             "-fx-border-radius: %dpx;" +
             "-fx-background-radius: %dpx;",
-            Styles.GRID_CELL_BACKGROUND,
-            Styles.CELL_PADDING,
-            Styles.GRID_CELL_BORDER,
-            Styles.BORDER_WIDTH,
-            Styles.BORDER_RADIUS,
-            Styles.BORDER_RADIUS
+            Styles.Colors.PREVIEW_BACKGROUND,
+            Styles.Dimensions.PREVIEW_PADDING,
+            Styles.Colors.PREVIEW_BORDER,
+            Styles.Dimensions.BORDER_WIDTH,
+            Styles.Dimensions.BORDER_RADIUS,
+            Styles.Dimensions.BORDER_RADIUS
         );
-        cell.setStyle(baseStyle);
-        cell.setEffect(shadow);
+        previewBox.setStyle(style);
+        previewBox.setEffect(createShadow());
+    }
 
-        // Thêm hiệu ứng hover
+    private GridPane createGrid() {
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(Styles.Dimensions.GRID_PADDING));
+        grid.setHgap(Styles.Dimensions.GRID_GAP);
+        grid.setVgap(Styles.Dimensions.GRID_GAP);
+        return grid;
+    }
+
+    private void addProductsToGrid(GridPane grid) {
+        DropShadow shadow = createShadow();
+        
+        for (int row = 0; row < GRID_ROWS; row++) {
+            for (int col = 0; col < GRID_COLS; col++) {
+                int index = row * GRID_COLS + col;
+                if (index < ProductData.PRODUCTS.length) {
+                    StackPane cell = createProductCell(ProductData.PRODUCTS[index], shadow);
+                    grid.add(cell, col, row);
+                }
+            }
+        }
+    }
+
+    private StackPane createProductCell(Product product, DropShadow shadow) {
+        StackPane cell = new StackPane();
+        cell.setPrefSize(Styles.Dimensions.CELL_SIZE, Styles.Dimensions.CELL_SIZE);
+        cell.setMaxSize(Styles.Dimensions.CELL_SIZE, Styles.Dimensions.CELL_SIZE);
+        
+        VBox contentBox = createProductContent(product);
+        cell.getChildren().add(contentBox);
+        
+        applyCellStyle(cell);
+        cell.setEffect(shadow);
+        
         addHoverEffects(cell);
-        
-        // Thêm xử lý click
-        addClickHandler(cell, imageView, row, col);
-        
-        // Tải ảnh
-        loadImage(imageView, row, col);
+        addClickHandler(cell, product);
+
+        // Tải ảnh ngay khi tạo cell
+        ImageView imageView = (ImageView) contentBox.getChildren().get(2); // Lấy ImageView từ contentBox
+        Image image = loadProductImage(product);
+        if (image != null) {
+            imageView.setImage(image);
+        } else {
+            // Áp dụng style placeholder cho image view
+            imageView.setStyle(String.format(
+                "-fx-background-color: %s;" +
+                "-fx-border-color: %s;" +
+                "-fx-border-width: %dpx;" +
+                "-fx-border-radius: %dpx;" +
+                "-fx-background-radius: %dpx;",
+                Styles.Colors.PLACEHOLDER_BACKGROUND,
+                Styles.Colors.PLACEHOLDER_BORDER,
+                Styles.Dimensions.BORDER_WIDTH,
+                Styles.Dimensions.BORDER_RADIUS,
+                Styles.Dimensions.BORDER_RADIUS
+            ));
+        }
         
         return cell;
+    }
+
+    private VBox createProductContent(Product product) {
+        VBox contentBox = new VBox(Styles.Dimensions.CELL_CONTENT_PADDING);
+        contentBox.setAlignment(Pos.TOP_CENTER);
+        contentBox.setMaxWidth(Styles.Dimensions.CELL_SIZE - 2 * Styles.Dimensions.CELL_PADDING);
+        
+        Label titleLabel = createLabel(product.name, 
+            Font.font("System", FontWeight.BOLD, Styles.FontSizes.TITLE));
+        titleLabel.setWrapText(true);
+        titleLabel.setTextAlignment(TextAlignment.CENTER);
+        
+        Label descLabel = createLabel(product.description, 
+            Font.font("System", Styles.FontSizes.DESC));
+        descLabel.setWrapText(true);
+        descLabel.setTextAlignment(TextAlignment.CENTER);
+        
+        ImageView imageView = createProductImageView();
+        HBox bottomBox = createProductBottomBox(product);
+        
+        contentBox.getChildren().addAll(titleLabel, descLabel, imageView, bottomBox);
+        return contentBox;
+    }
+
+    private ImageView createProductImageView() {
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(Styles.Dimensions.IMAGE_SIZE);
+        imageView.setFitHeight(Styles.Dimensions.IMAGE_SIZE);
+        imageView.setPreserveRatio(true);
+        return imageView;
+    }
+
+    private HBox createProductBottomBox(Product product) {
+        HBox bottomBox = new HBox();
+        bottomBox.setAlignment(Pos.BOTTOM_LEFT);
+        bottomBox.setSpacing(Styles.Dimensions.CELL_CONTENT_PADDING);
+        HBox.setHgrow(bottomBox, javafx.scene.layout.Priority.ALWAYS);
+        bottomBox.setPadding(new Insets(0));
+        
+        Label brandLabel = createLabel(product.brand, 
+            Font.font("System", Styles.FontSizes.BRAND));
+        
+        Label priceLabel = createLabel(product.price, 
+            Font.font("System", FontWeight.BOLD, Styles.FontSizes.PRICE));
+        priceLabel.setTextFill(Color.web(Styles.Colors.PRICE_COLOR));
+        HBox.setHgrow(priceLabel, javafx.scene.layout.Priority.ALWAYS);
+        priceLabel.setAlignment(Pos.CENTER_RIGHT);
+        priceLabel.setPadding(new Insets(0));
+        priceLabel.setMaxWidth(Double.MAX_VALUE);
+        
+        bottomBox.getChildren().addAll(brandLabel, priceLabel);
+        return bottomBox;
+    }
+
+    private void applyCellStyle(StackPane cell) {
+        String style = String.format(
+            "-fx-background-color: %s;" +
+            "-fx-padding: %dpx;" +
+            "-fx-border-color: %s;" +
+            "-fx-border-width: %dpx;" +
+            "-fx-border-radius: %dpx;" +
+            "-fx-background-radius: %dpx;",
+            Styles.Colors.GRID_CELL_BACKGROUND,
+            Styles.Dimensions.CELL_PADDING,
+            Styles.Colors.GRID_CELL_BORDER,
+            Styles.Dimensions.BORDER_WIDTH,
+            Styles.Dimensions.BORDER_RADIUS,
+            Styles.Dimensions.BORDER_RADIUS
+        );
+        cell.setStyle(style);
     }
 
     private Label createLabel(String text, Font font) {
         Label label = new Label(text);
         label.setFont(font);
-        label.setTextFill(Color.web(Styles.TEXT_COLOR));
+        if (font.getSize() == Styles.FontSizes.DESC) {
+            label.setTextFill(Color.web(Styles.Colors.DESC_COLOR));
+        } else {
+            label.setTextFill(Color.web(Styles.Colors.TEXT_COLOR));
+        }
         return label;
+    }
+
+    private DropShadow createShadow() {
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(Styles.Effects.SHADOW_RADIUS);
+        shadow.setOffsetX(Styles.Effects.SHADOW_OFFSET);
+        shadow.setOffsetY(Styles.Effects.SHADOW_OFFSET);
+        shadow.setColor(Color.rgb(0, 0, 0, Styles.Effects.SHADOW_OPACITY));
+        return shadow;
     }
 
     private void addHoverEffects(StackPane cell) {
@@ -276,10 +331,10 @@ public class Main extends Application {
                     String.format("-fx-background-color: %s;" +
                                 "-fx-border-color: %s;" +
                                 "-fx-cursor: hand;",
-                                Styles.GRID_CELL_HOVER,
-                                Styles.GRID_CELL_BORDER));
-                cell.setScaleX(Styles.HOVER_SCALE);
-                cell.setScaleY(Styles.HOVER_SCALE);
+                                Styles.Colors.GRID_CELL_HOVER,
+                                Styles.Colors.GRID_CELL_BORDER));
+                cell.setScaleX(Styles.Effects.HOVER_SCALE);
+                cell.setScaleY(Styles.Effects.HOVER_SCALE);
             }
         });
 
@@ -292,79 +347,103 @@ public class Main extends Application {
         });
     }
 
-    private void addClickHandler(StackPane cell, ImageView imageView, int row, int col) {
+    private void addClickHandler(StackPane cell, Product product) {
         cell.setOnMouseClicked(e -> {
-            // Reset style of previously selected cell
             if (selectedCell != null) {
                 String baseStyle = selectedCell.getStyle().replace(
-                    String.format("-fx-border-color: %s;", Styles.SELECTED_BORDER),
-                    String.format("-fx-border-color: %s;", Styles.GRID_CELL_BORDER)
+                    String.format("-fx-border-color: %s;", Styles.Colors.SELECTED_BORDER),
+                    String.format("-fx-border-color: %s;", Styles.Colors.GRID_CELL_BORDER)
                 );
                 selectedCell.setStyle(baseStyle);
             }
 
-            // Update selected cell
             selectedCell = cell;
             String newStyle = cell.getStyle().replace(
-                String.format("-fx-border-color: %s;", Styles.GRID_CELL_BORDER),
-                String.format("-fx-border-color: %s;", Styles.SELECTED_BORDER)
+                String.format("-fx-border-color: %s;", Styles.Colors.GRID_CELL_BORDER),
+                String.format("-fx-border-color: %s;", Styles.Colors.SELECTED_BORDER)
             );
             cell.setStyle(newStyle);
 
-            // Update preview
-            if (imageView.getImage() != null) {
-                previewImageView.setImage(imageView.getImage());
-                updatePreviewInfo(row, col);
-            }
+            updatePreview(product);
         });
     }
 
-    private void loadImage(ImageView imageView, int row, int col) {
-        String imagePath = String.format(IMAGE_PATH_TEMPLATE, row * GRID_COLS + col + 1);
-        try {
-            Image image = new Image(getClass().getResourceAsStream(imagePath));
-            imageView.setImage(image);
-        } catch (Exception e) {
-            System.out.println("Không tìm thấy ảnh: " + imagePath);
-            applyPlaceholderStyle(imageView);
+    private void updatePreview(Product product) {
+        Image image = loadProductImage(product);
+        if (image != null) {
+            previewImageView.setImage(image);
+            updatePreviewInfo(product);
+        } else {
+            System.out.println("Không thể cập nhật preview vì không tải được ảnh cho sản phẩm: " + product.name);
+            // Áp dụng style placeholder cho preview image
+            previewImageView.setImage(null);
+            previewImageView.setStyle(String.format(
+                "-fx-background-color: %s;" +
+                "-fx-border-color: %s;" +
+                "-fx-border-width: %dpx;" +
+                "-fx-border-radius: %dpx;" +
+                "-fx-background-radius: %dpx;",
+                Styles.Colors.PLACEHOLDER_BACKGROUND,
+                Styles.Colors.PLACEHOLDER_BORDER,
+                Styles.Dimensions.BORDER_WIDTH,
+                Styles.Dimensions.BORDER_RADIUS,
+                Styles.Dimensions.BORDER_RADIUS
+            ));
         }
     }
 
-    private void applyPlaceholderStyle(ImageView imageView) {
-        imageView.setStyle(String.format(
-            "-fx-background-color: %s;" +
-            "-fx-border-color: %s;" +
-            "-fx-border-width: %dpx;" +
-            "-fx-border-radius: %dpx;" +
-            "-fx-background-radius: %dpx;",
-            Styles.PLACEHOLDER_BACKGROUND,
-            Styles.PLACEHOLDER_BORDER,
-            Styles.BORDER_WIDTH,
-            Styles.BORDER_RADIUS,
-            Styles.BORDER_RADIUS
-        ));
+    private Image loadProductImage(Product product) {
+        int index = getProductIndex(product);
+        if (index == -1) {
+            System.out.println("Không tìm thấy index cho sản phẩm: " + product.name);
+            return null;
+        }
+
+        String imagePath = String.format(IMAGE_PATH_TEMPLATE, index + 1);
+        System.out.println("Đang tải ảnh từ đường dẫn: " + imagePath);
+        
+        try {
+            Image image = new Image(getClass().getResourceAsStream(imagePath));
+            if (image.isError()) {
+                System.out.println("Lỗi khi tải ảnh: " + imagePath);
+                return null;
+            }
+            System.out.println("Tải ảnh thành công: " + imagePath);
+            return image;
+        } catch (Exception e) {
+            System.out.println("Lỗi khi tải ảnh " + imagePath + ": " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private void updatePreviewInfo(int row, int col) {
+    private int getProductIndex(Product product) {
+        for (int i = 0; i < ProductData.PRODUCTS.length; i++) {
+            if (ProductData.PRODUCTS[i] == product) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void updatePreviewInfo(Product product) {
         previewInfoBox.getChildren().clear();
         
-        // Tạo các label cho thông tin sản phẩm
-        Label titleLabel = createLabel(ProductData.PRODUCTS[row * GRID_COLS + col][0], 
-            Font.font("System", FontWeight.BOLD, Styles.PREVIEW_TITLE_FONT_SIZE));
+        Label titleLabel = createLabel(product.name, 
+            Font.font("System", FontWeight.BOLD, Styles.FontSizes.TITLE));
         titleLabel.setWrapText(true);
         
-        Label descLabel = createLabel(ProductData.PRODUCTS[row * GRID_COLS + col][1], 
-            Font.font("System", Styles.PREVIEW_DESC_FONT_SIZE));
+        Label descLabel = createLabel(product.description, 
+            Font.font("System", Styles.FontSizes.DESC));
         descLabel.setWrapText(true);
         
-        Label brandLabel = createLabel("Hãng: " + ProductData.PRODUCTS[row * GRID_COLS + col][2], 
-            Font.font("System", Styles.PREVIEW_BRAND_FONT_SIZE));
+        Label brandLabel = createLabel("Hãng: " + product.brand, 
+            Font.font("System", Styles.FontSizes.BRAND));
         
-        Label priceLabel = createLabel(ProductData.PRODUCTS[row * GRID_COLS + col][3], 
-            Font.font("System", FontWeight.BOLD, Styles.PREVIEW_PRICE_FONT_SIZE));
-        priceLabel.setTextFill(Color.web(Styles.PRICE_COLOR));
+        Label priceLabel = createLabel(product.price, 
+            Font.font("System", FontWeight.BOLD, Styles.FontSizes.PRICE));
+        priceLabel.setTextFill(Color.web(Styles.Colors.PRICE_COLOR));
         
-        // Thêm các label vào preview info box
         previewInfoBox.getChildren().addAll(titleLabel, descLabel, brandLabel, priceLabel);
     }
 
